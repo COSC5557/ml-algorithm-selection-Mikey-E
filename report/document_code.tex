@@ -1,0 +1,104 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{comment}
+\usepackage{caption} % for table captions
+
+\usepackage[shortlabels]{enumitem} % for (a) (b) (c) enumerate use [(a)] like so:
+%\begin{enumerate}[(a)]
+\usepackage{bm}%bold symbols in math mode
+%\usepackage{amsmath}
+
+\usepackage{listings} % Typeset Python
+%Here is an example of how to do that
+%\begin{lstlisting}[language=Python, basicstyle=\tiny]
+%#Here is some test Python
+%def yay():
+%    print("hi")
+%\end{lstlisting}
+
+\usepackage{graphicx} % for images
+%\includegraphics{uploaded-file-name}
+
+\title{COSC 5010-03 Practical Machine Learning Fall 2023 Algorithm Selection Report}
+\author{Michael Elgin}
+\date{October 11, 2023}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction} %What problem are you solving, how are you going to solve it.
+
+Regression and classification are two of the most important tasks in supervised machine learning. This exercise compares the performance of various regression and classification models on the wine quality dataset\footnote{https://archive.ics.uci.edu/dataset/186/wine+quality}. 4 regression models are evaluated, and 6 classification models are evaluated
+
+\section{Dataset Description} %Describe the data you're using, e.g. how many features and observations, what are you predicting, any missing values, etc.
+
+The wine quality dataset is standard tabular data. There are 2 datasets for each color of red and white. Both contain 11 features, all of which are continuous. The target is a discrete value which is the assigned quality of the wine. For the regression tasks, the white wine dataset is used to evaluate models. For classification tasks, both datasets are concatenated, with the target being changed to be the color of the wine, with 0 being assigned to red and 1 to white. In both cases of classification and regression, the datasets are split into training and testing sets, with 20\% for testing and 80\% for training.
+
+\section{Experimental Setup} %What specifically are you doing to solve the problem, i.e. what programming languages and libraries, how are you processing the data, what machine learning algorithms are you considering, how are you evaluating them, etc.
+
+All computation is done with the Python programming language. Scikit-learn is used to construct models with the one exception of pygam to created a generalized additive model for regression. Pandas and numpy are used to load and preprocess the data along with scikit-learn's train\_test\_split function.
+
+For regression, performance is defined by rounding the regression number predicted by the model to the nearest whole number, then the accuracy is defined as the amount of predictions that matched the assigned wine quality (also discrete) divided by the total number of samples in the test set. More formally:
+
+$$
+    GE_{Regression\ model}(\hat{f}, \bm{X}_{test}, \bm{y}_{test}) = \frac{\sum_{i=1}^{|\bm{X}_{test}|}l_{0,1}(\left\lfloor \hat{f}(\bm{X}_{test,i}) \right\rceil, \bm{y}_{test,i})}{|\bm{X}_{test}|}
+$$
+
+With the accuracy then defined as:
+
+$$
+Acc_{Regression\ model} = (1 - GE_{Regression\ model}) * 100
+$$
+
+For classification, the error performance is defined similarly:
+
+$$
+    GE_{Classification\ model}(\hat{f}, \bm{X}_{test}, \bm{y}_{test}) = \frac{\sum_{i=1}^{|\bm{X}_{test}|}l_{0,1}(\hat{f}(\bm{X}_{test,i}), \bm{y}_{test,i})}{|\bm{X}_{test}|}
+$$
+
+$$
+Acc_{Classification\ model} = (1 - GE_{Classification\ model}) * 100
+$$
+
+\section{Results} %Description of what you observed, including plots.
+
+\begin{table}[h]
+\centering
+\caption{Regression model accuracies}
+\label{reg_table}
+\begin{tabular}{l|c} % l for left-aligned column, c for centered columns
+  & Accuracy \\ \hline
+Baseline (mode guessing) & 41.735\% \\
+Linear Model & 48.163\% \\
+Decision Tree & 57.959\% \\
+Random Forest & 63.673\% \\
+Generalized Additive Model & 50.816\% \\
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Classification model accuracies}
+\label{cls_table}
+\begin{tabular}{l|c} % l for left-aligned column, c for centered columns
+  & Accuracy \\ \hline
+Baseline (mode guessing) & 76.077\% \\
+Support Vector Classifier & 93.538\% \\
+Logistic Regression & 98.692\% \\
+Decision Tree & 98.231\% \\
+K-Nearest Neighbor & 94.923\% \\
+Naive Bayes & 97.615\% \\
+Random Forest & 99.538\% \\
+\end{tabular}
+\end{table}
+
+In both regression and classification, the random forest algorithm performs the best.
+
+\section{Code} %Add the code you've used as a separate file.
+
+The associated code is in Alg\_Selection.ipynb
+
+\end{document}
